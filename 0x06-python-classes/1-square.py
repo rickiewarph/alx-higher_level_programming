@@ -5,9 +5,9 @@
 class Square:
     """A class defining a square."""
 
-    def __init__(self, q):
+    def __init__(q, size):
         """A func constructor.
         Args:
-            q: The len of a square's side.
+            size: The len of a square's side.
         """
-        self.__q = q
+        q.__size = size
