@@ -16,6 +16,7 @@ class Square:
     def size(q):
         """This func gets or sets current size of the square."""
         return (q.__size)
+
     @size.setter
     def size(q, val):
         if not isinstance(val, int):
