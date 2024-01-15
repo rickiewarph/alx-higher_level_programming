@@ -1,0 +1,806 @@
+#!/usr/bin/python3
+"""Defining unittests for models/rectangle.py.
+
+Unittest classes:
+    TestRectangle_instantiation - line 23
+    TestRectangle_width - line 112
+    TestRectangle_height - line 188
+    TestRectangle_x - line 260
+    TestRectangle_y - line 332
+    TestRectangle_order_of_initialization - line 400
+    TestRectangle_area - line 428
+    TestRectangle_update_args - line 536
+    TestRectangle_update_kwargs - line 674
+    TestRectangle_to_dictionary - line 786
+"""
+import sys
+import io
+import unittest
+from models.base import Base
+from models.rectangle import Rectangle
+
+
+class TestRectangle_instantiation(unittest.TestCase):
+    """Unittesting to test instantiation of the Rect class."""
+
+    def test_rectangle_is_base(sel):
+        sel.assertIsInstance(Rectangle(10, 2), Base)
+
+    def test_no_args(sel):
+        with sel.assertRaises(TypeError):
+            Rectangle()
+
+    def test_one_arg(sel):
+        with sel.assertRaises(TypeError):
+            Rectangle(1)
+
+    def test_two_args(sel):
+        rt1 = Rectangle(10, 2)
+        rt2 = Rectangle(2, 10)
+        sel.assertEqual(rt1.id, rt2.id - 1)
+
+    def test_three_args(sel):
+        rt1 = Rectangle(2, 2, 4)
+        rt2 = Rectangle(4, 4, 2)
+        sel.assertEqual(rt1.id, rt2.id - 1)
+
+    def test_four_args(sel):
+        rt1 = Rectangle(1, 2, 3, 4)
+        rt2 = Rectangle(4, 3, 2, 1)
+        sel.assertEqual(rt1.id, rt2.id - 1)
+
+    def test_five_args(sel):
+        sel.assertEqual(7, Rectangle(10, 2, 0, 0, 7).id)
+
+    def test_more_than_five_args(sel):
+        with sel.assertRaises(TypeError):
+            Rectangle(1, 2, 3, 4, 5, 6)
+
+    def test_width_private(sel):
+        with sel.assertRaises(AttributeError):
+            print(Rectangle(5, 5, 0, 0, 1).__width)
+
+    def test_height_private(sel):
+        with sel.assertRaises(AttributeError):
+            print(Rectangle(5, 5, 0, 0, 1).__height)
+
+    def test_x_private(sel):
+        with sel.assertRaises(AttributeError):
+            print(Rectangle(5, 5, 0, 0, 1).__x)
+
+    def test_y_private(sel):
+        with sel.assertRaises(AttributeError):
+            print(Rectangle(5, 5, 0, 0, 1).__y)
+
+    def test_width_getter(sel):
+        rt = Rectangle(5, 7, 7, 5, 1)
+        sel.assertEqual(5, rt.width)
+
+    def test_width_setter(sel):
+        rt = Rectangle(5, 7, 7, 5, 1)
+        rt.width = 10
+        sel.assertEqual(10, rt.width)
+
+    def test_height_getter(sel):
+        rt = Rectangle(5, 7, 7, 5, 1)
+        sel.assertEqual(7, rt.height)
+
+    def test_height_setter(sel):
+        rt = Rectangle(5, 7, 7, 5, 1)
+        rt.height = 10
+        sel.assertEqual(10, rt.height)
+
+    def test_x_getter(sel):
+        rt = Rectangle(5, 7, 7, 5, 1)
+        sel.assertEqual(7, rt.x)
+
+    def test_x_setter(sel):
+        rt = Rectangle(5, 7, 7, 5, 1)
+        rt.x = 10
+        sel.assertEqual(10, rt.x)
+
+    def test_y_getter(sel):
+        rt = Rectangle(5, 7, 7, 5, 1)
+        sel.assertEqual(5, rt.y)
+
+    def test_y_setter(sel):
+        rt = Rectangle(5, 7, 7, 5, 1)
+        rt.y = 10
+        sel.assertEqual(10, rt.y)
+
+
+class TestRectangle_width(unittest.TestCase):
+    """Unittesting to test initialization of Rect width attribute."""
+
+    def test_None_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle(None, 2)
+
+    def test_str_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle("invalid", 2)
+
+    def test_float_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle(5.5, 1)
+
+    def test_complex_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle(complex(5), 2)
+
+    def test_dict_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle({"a": 1, "b": 2}, 2)
+
+    def test_bool_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle(True, 2)
+
+    def test_list_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle([1, 2, 3], 2)
+
+    def test_set_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle({1, 2, 3}, 2)
+
+    def test_tuple_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle((1, 2, 3), 2)
+
+    def test_frozenset_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle(frozenset({1, 2, 3, 1}), 2)
+
+    def test_range_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle(range(5), 2)
+
+    def test_bytes_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle(b'Python', 2)
+
+    def test_bytearray_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle(bytearray(b'abcdefg'), 2)
+
+    def test_memoryview_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle(memoryview(b'abcedfg'), 2)
+
+    def test_inf_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle(float('inf'), 2)
+
+    def test_nan_width(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle(float('nan'), 2)
+
+    def test_negative_width(sel):
+        with sel.assertRaisesRegex(ValueError, "width must be > 0"):
+            Rectangle(-1, 2)
+
+    def test_zero_width(sel):
+        with sel.assertRaisesRegex(ValueError, "width must be > 0"):
+            Rectangle(0, 2)
+
+
+class TestRectangle_height(unittest.TestCase):
+    """Unittesting to test initialization of Rect height attribute."""
+
+    def test_None_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, None)
+
+    def test_str_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, "invalid")
+
+    def test_float_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, 5.5)
+
+    def test_complex_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, complex(5))
+
+    def test_dict_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, {"a": 1, "b": 2})
+
+    def test_list_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, [1, 2, 3])
+
+    def test_set_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, {1, 2, 3})
+
+    def test_tuple_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, (1, 2, 3))
+
+    def test_frozenset_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, frozenset({1, 2, 3, 1}))
+
+    def test_range_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, range(5))
+
+    def test_bytes_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, b'Python')
+
+    def test_bytearray_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, bytearray(b'abcdefg'))
+
+    def test_memoryview_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, memoryview(b'abcedfg'))
+
+    def test_inf_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, float('inf'))
+
+    def test_nan_height(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, float('nan'))
+
+    def test_negative_height(sel):
+        with sel.assertRaisesRegex(ValueError, "height must be > 0"):
+            Rectangle(1, -1)
+
+    def test_zero_height(sel):
+        with sel.assertRaisesRegex(ValueError, "height must be > 0"):
+            Rectangle(1, 0)
+
+
+class TestRectangle_x(unittest.TestCase):
+    """Unittesting to test initialization of Rect x attribute."""
+
+    def test_None_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, None)
+
+    def test_str_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, "invalid", 2)
+
+    def test_float_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, 5.5, 9)
+
+    def test_complex_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, complex(5))
+
+    def test_dict_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, {"a": 1, "b": 2}, 2)
+
+    def test_bool_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, True, 2)
+
+    def test_list_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, [1, 2, 3], 2)
+
+    def test_set_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, {1, 2, 3}, 2)
+
+    def test_tuple_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, (1, 2, 3), 2)
+
+    def test_frozenset_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, frozenset({1, 2, 3, 1}))
+
+    def test_range_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, range(5))
+
+    def test_bytes_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, b'Python')
+
+    def test_bytearray_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, bytearray(b'abcdefg'))
+
+    def test_memoryview_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, memoryview(b'abcedfg'))
+
+    def test_inf_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, float('inf'), 2)
+
+    def test_nan_x(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, float('nan'), 2)
+
+    def test_negative_x(sel):
+        with sel.assertRaisesRegex(ValueError, "x must be >= 0"):
+            Rectangle(5, 3, -1, 0)
+
+
+class TestRectangle_y(unittest.TestCase):
+    """Unittesting to test initialization of Rect y attribute."""
+
+    def test_None_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 3, None)
+
+    def test_str_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 1, "invalid")
+
+    def test_float_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 3, 5.5)
+
+    def test_complex_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 3, complex(5))
+
+    def test_dict_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 1, {"a": 1, "b": 2})
+
+    def test_list_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 1, [1, 2, 3])
+
+    def test_set_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 1, {1, 2, 3})
+
+    def test_tuple_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 1, (1, 2, 3))
+
+    def test_frozenset_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 3, frozenset({1, 2, 3, 1}))
+
+    def test_range_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 3, range(5))
+
+    def test_bytes_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 3, b'Python')
+
+    def test_bytearray_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 3, bytearray(b'abcdefg'))
+
+    def test_memoryview_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 3, memoryview(b'abcedfg'))
+
+    def test_inf_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 1, float('inf'))
+
+    def test_nan_y(sel):
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            Rectangle(1, 2, 1, float('nan'))
+
+    def test_negative_y(sel):
+        with sel.assertRaisesRegex(ValueError, "y must be >= 0"):
+            Rectangle(3, 5, 0, -1)
+
+
+class TestRectangle_order_of_initialization(unittest.TestCase):
+    """Unittesting to test Rect order of attr initialization."""
+
+    def test_width_before_height(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle("invalid width", "invalid height")
+
+    def test_width_before_x(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle("invalid width", 2, "invalid x")
+
+    def test_width_before_y(sel):
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            Rectangle("invalid width", 2, 3, "invalid y")
+
+    def test_height_before_x(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, "invalid height", "invalid x")
+
+    def test_height_before_y(sel):
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            Rectangle(1, "invalid height", 2, "invalid y")
+
+    def test_x_before_y(sel):
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            Rectangle(1, 2, "invalid x", "invalid y")
+
+
+class TestRectangle_area(unittest.TestCase):
+    """Unittests to test the area method of the Rect class."""
+
+    def test_area_small(sel):
+        rt = Rectangle(10, 2, 0, 0, 0)
+        sel.assertEqual(20, rt.area())
+
+    def test_area_large(sel):
+        rt = Rectangle(999999999999999, 999999999999999999, 0, 0, 1)
+        sel.assertEqual(999999999999998999000000000000001, rt.area())
+
+    def test_area_changed_attributes(sel):
+        rt = Rectangle(2, 10, 1, 1, 1)
+        rt.width = 7
+        rt.height = 14
+        sel.assertEqual(98, rt.area())
+
+    def test_area_one_arg(sel):
+        rt = Rectangle(2, 10, 1, 1, 1)
+        with sel.assertRaises(TypeError):
+            rt.area(1)
+
+
+class TestRectangle_stdout(unittest.TestCase):
+    """Unittests to test __str__ and display methods of Rect class."""
+
+    @staticmethod
+    def capture_stdout(rect, methd):
+        """Capturing and returning text printed to stdout.
+
+        Args:
+            rect (Rectangle): The Rect to be printed to stdout.
+            methd (str): The method to run on rect.
+        Returns:
+            The txt printed to stdout by calling method on sq.
+        """
+        capture = io.StringIO()
+        sys.stdout = capture
+        if methd == "print":
+            print(rect)
+        else:
+            rect.display()
+        sys.stdout = sys.__stdout__
+        return capture
+
+    # Testing __str__ methd
+    def test_str_methd_print_width_height(sel):
+        rt = Rectangle(4, 6)
+        capture = TestRectangle_stdout.capture_stdout(r, "print")
+        correct = "[Rectangle] ({}) 0/0 - 4/6\n".format(rt.id)
+        sel.assertEqual(correct, capture.getvalue())
+
+    def test_str_method_width_height_x(sel):
+        rt = Rectangle(5, 5, 1)
+        correct = "[Rectangle] ({}) 1/0 - 5/5".format(rt.id)
+        sel.assertEqual(correct, rt.__str__())
+
+    def test_str_methd_width_height_x_y(sel):
+        rt = Rectangle(1, 8, 2, 4)
+        correct = "[Rectangle] ({}) 2/4 - 1/8".format(rt.id)
+        sel.assertEqual(correct, str(rt))
+
+    def test_str_methd_width_height_x_y_id(sel):
+        rt = Rectangle(13, 21, 2, 4, 7)
+        sel.assertEqual("[Rectangle] (7) 2/4 - 13/21", str(rt))
+
+    def test_str_methd_changed_attributes(sel):
+        rt = Rectangle(7, 7, 0, 0, [4])
+        rt.width = 15
+        rt.height = 1
+        rt.x = 8
+        rt.y = 10
+        sel.assertEqual("[Rectangle] ([4]) 8/10 - 15/1", str(rt))
+
+    def test_str_methd_one_arg(sel):
+        rt = Rectangle(1, 2, 3, 4, 5)
+        with sel.assertRaises(TypeError):
+            rt.__str__(1)
+
+    # Testing methd display
+    def test_display_width_height(sel):
+        rt = Rectangle(2, 3, 0, 0, 0)
+        capture = TestRectangle_stdout.capture_stdout(rt, "display")
+        sel.assertEqual("##\n##\n##\n", capture.getvalue())
+
+    def test_display_width_height_x(sel):
+        rt = Rectangle(3, 2, 1, 0, 1)
+        capture = TestRectangle_stdout.capture_stdout(rt, "display")
+        sel.assertEqual(" ###\n ###\n", capture.getvalue())
+
+    def test_display_width_height_y(sel):
+        rt = Rectangle(4, 5, 0, 1, 0)
+        capture = TestRectangle_stdout.capture_stdout(rt, "display")
+        display = "\n####\n####\n####\n####\n####\n"
+        sel.assertEqual(display, capture.getvalue())
+
+    def test_display_width_height_x_y(sel):
+        rt = Rectangle(2, 4, 3, 2, 0)
+        capture = TestRectangle_stdout.capture_stdout(rt, "display")
+        display = "\n\n   ##\n   ##\n   ##\n   ##\n"
+        sel.assertEqual(display, capture.getvalue())
+
+    def test_display_one_arg(sel):
+        rt = Rectangle(5, 1, 2, 4, 7)
+        with sel.assertRaises(TypeError):
+            rt.display(1)
+
+
+class TestRectangle_update_args(unittest.TestCase):
+    """Unittests to test update arguments method of the Rectangle class."""
+
+    # Test arguments
+    def test_update_args_zero(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update()
+        sel.assertEqual("[Rectangle] (10) 10/10 - 10/10", str(rt))
+
+    def test_update_args_one(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(89)
+        sel.assertEqual("[Rectangle] (89) 10/10 - 10/10", str(rt))
+
+    def test_update_args_two(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(89, 2)
+        sel.assertEqual("[Rectangle] (89) 10/10 - 2/10", str(rt))
+
+    def test_update_args_three(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(89, 2, 3)
+        sel.assertEqual("[Rectangle] (89) 10/10 - 2/3", str(rt))
+
+    def test_update_args_four(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(89, 2, 3, 4)
+        sel.assertEqual("[Rectangle] (89) 4/10 - 2/3", str(rt))
+
+    def test_update_args_five(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(89, 2, 3, 4, 5)
+        sel.assertEqual("[Rectangle] (89) 4/5 - 2/3", str(rt))
+
+    def test_update_args_more_than_five(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(89, 2, 3, 4, 5, 6)
+        sel.assertEqual("[Rectangle] (89) 4/5 - 2/3", str(rt))
+
+    def test_update_args_None_id(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(None)
+        correct = "[Rectangle] ({}) 10/10 - 10/10".format(rt.id)
+        sel.assertEqual(correct, str(rt))
+
+    def test_update_args_None_id_and_more(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(None, 4, 5, 2)
+        correct = "[Rectangle] ({}) 2/10 - 4/5".format(rt.id)
+        sel.assertEqual(correct, str(rt))
+
+    def test_update_args_twice(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(89, 2, 3, 4, 5, 6)
+        rt.update(6, 5, 4, 3, 2, 89)
+        sel.assertEqual("[Rectangle] (6) 3/2 - 5/4", str(rt))
+
+    def test_update_args_invalid_width_type(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            rt.update(89, "invalid")
+
+    def test_update_args_width_zero(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(ValueError, "width must be > 0"):
+            rt.update(89, 0)
+
+    def test_update_args_width_negative(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(ValueError, "width must be > 0"):
+            rt.update(89, -5)
+
+    def test_update_args_invalid_height_type(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            rt.update(89, 2, "invalid")
+
+    def test_update_args_height_zero(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with self.assertRaisesRegex(ValueError, "height must be > 0"):
+            rt.update(89, 1, 0)
+
+    def test_update_args_height_negative(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(ValueError, "height must be > 0"):
+            rt.update(89, 1, -5)
+
+    def test_update_args_invalid_x_type(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            rt.update(89, 2, 3, "invalid")
+
+    def test_update_args_x_negative(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(ValueError, "x must be >= 0"):
+            rt.update(89, 1, 2, -6)
+
+    def test_update_args_invalid_y(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            rt.update(89, 2, 3, 4, "invalid")
+
+    def test_update_args_y_negative(self):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(ValueError, "y must be >= 0"):
+            rt.update(89, 1, 2, 3, -6)
+
+    def test_update_args_width_before_height(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            rt.update(89, "invalid", "invalid")
+
+    def test_update_args_width_before_x(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            rt.update(89, "invalid", 1, "invalid")
+
+    def test_update_args_width_before_y(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            rt.update(89, "invalid", 1, 2, "invalid")
+
+    def test_update_args_height_before_x(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            rt.update(89, 1, "invalid", "invalid")
+
+    def test_update_args_height_before_y(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            rt.update(89, 1, "invalid", 1, "invalid")
+
+    def test_update_args_x_before_y(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            rt.update(89, 1, 2, "invalid", "invalid")
+
+
+class TestRectangle_update_kwargs(unittest.TestCase):
+    """Unittests to test update kwargs methd of the Rect class."""
+
+    def test_update_kwargs_one(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(id=1)
+        sel.assertEqual("[Rectangle] (1) 10/10 - 10/10", str(rt))
+
+    def test_update_kwargs_two(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(width=2, id=1)
+        sel.assertEqual("[Rectangle] (1) 10/10 - 2/10", str(rt))
+
+    def test_update_kwargs_three(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(width=2, height=3, id=89)
+        sel.assertEqual("[Rectangle] (89) 10/10 - 2/3", str(rt))
+
+    def test_update_kwargs_four(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(id=89, x=1, height=2, y=3, width=4)
+        sel.assertEqual("[Rectangle] (89) 1/3 - 4/2", str(rt))
+
+    def test_update_kwargs_five(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(y=5, x=8, id=99, width=1, height=2)
+        sel.assertEqual("[Rectangle] (99) 8/5 - 1/2", str(rt))
+
+    def test_update_kwargs_None_id(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(id=None)
+        correct = "[Rectangle] ({}) 10/10 - 10/10".format(rt.id)
+        sel.assertEqual(correct, str(rt))
+
+    def test_update_kwargs_None_id_and_more(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(id=None, height=7, y=9)
+        correct = "[Rectangle] ({}) 10/9 - 10/7".format(rt.id)
+        sel.assertEqual(correct, str(rt))
+
+    def test_update_kwargs_twice(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(id=89, x=1, height=2)
+        rt.update(y=3, height=15, width=2)
+        sel.assertEqual("[Rectangle] (89) 1/3 - 2/15", str(rt))
+
+    def test_update_kwargs_invalid_width_type(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "width must be an integer"):
+            rt.update(width="invalid")
+
+    def test_update_kwargs_width_zero(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(ValueError, "width must be > 0"):
+            rt.update(width=0)
+
+    def test_update_kwargs_width_negative(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(ValueError, "width must be > 0"):
+            rt.update(width=-5)
+
+    def test_update_kwargs_invalid_height_type(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "height must be an integer"):
+            rt.update(height="invalid")
+
+    def test_update_kwargs_height_zero(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(ValueError, "height must be > 0"):
+            rt.update(height=0)
+
+    def test_update_kwargs_height_negative(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(ValueError, "height must be > 0"):
+            rt.update(height=-5)
+
+    def test_update_kwargs_inavlid_x_type(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "x must be an integer"):
+            rt.update(x="invalid")
+
+    def test_update_kwargs_x_negative(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(ValueError, "x must be >= 0"):
+            rt.update(x=-5)
+
+    def test_update_kwargs_invalid_y_type(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(TypeError, "y must be an integer"):
+            rt.update(y="invalid")
+
+    def test_update_kwargs_y_negative(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        with sel.assertRaisesRegex(ValueError, "y must be >= 0"):
+            rt.update(y=-5)
+
+    def test_update_args_and_kwargs(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(89, 2, height=4, y=6)
+        sel.assertEqual("[Rectangle] (89) 10/10 - 2/10", str(rt))
+
+    def test_update_kwargs_wrong_keys(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(a=5, b=10)
+        sel.assertEqual("[Rectangle] (10) 10/10 - 10/10", str(rt))
+
+    def test_update_kwargs_some_wrong_keys(sel):
+        rt = Rectangle(10, 10, 10, 10, 10)
+        rt.update(height=5, id=89, a=1, b=54, x=19, y=7)
+        sel.assertEqual("[Rectangle] (89) 19/7 - 10/5", str(rt))
+
+
+class TestRectangle_to_dictionary(unittest.TestCase):
+    """Unittests to test to_dict method of the Rect class."""
+
+    def test_to_dictionary_output(sel):
+        rt = Rectangle(10, 2, 1, 9, 5)
+        correct = {'x': 1, 'y': 9, 'id': 5, 'height': 2, 'width': 10}
+        sel.assertDictEqual(correct, rt.to_dictionary())
+
+    def test_to_dictionary_no_object_changes(sel):
+        rt1 = Rectangle(10, 2, 1, 9, 5)
+        rt2 = Rectangle(5, 9, 1, 2, 10)
+        rt2.update(**rt1.to_dictionary())
+        sel.assertNotEqual(rt1, rt2)
+
+    def test_to_dictionary_arg(sel):
+        rt = Rectangle(10, 2, 4, 1, 2)
+        with sel.assertRaises(TypeError):
+            rt.to_dictionary(1)
+
+if __name__ == "__main__":
+    unittest.main()
