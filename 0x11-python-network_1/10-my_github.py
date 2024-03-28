@@ -14,7 +14,7 @@ if __name__ == "__main__":
     username = argv[1]
     password = argv[2]
     url = 'https://api.github.com/user'
-    rq = requests.get(url, auth=(rickiewarph, ghp_4kVmDEoc3HC22sR4wmzqXEWpDM90qv2Nf))
+    rq = requests.get(url, auth=(username, password))
     try:
         print(rq.json().get('id'))
     except:
